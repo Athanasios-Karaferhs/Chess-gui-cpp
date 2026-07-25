@@ -4,116 +4,106 @@
 const int BOARD_SIZE = 8;
 const int SQUARE_SIZE = 70;
 const int WINDOW_SIZE = BOARD_SIZE * SQUARE_SIZE;
+using namespace sf;
 
 int main()
 {
-    sf::RenderWindow window(
-        sf::VideoMode(WINDOW_SIZE, WINDOW_SIZE),
+    RenderWindow window(
+        VideoMode(WINDOW_SIZE, WINDOW_SIZE),
         "Chess :)");
 
-    sf::RectangleShape squares[BOARD_SIZE][BOARD_SIZE];
+    RectangleShape squares[BOARD_SIZE][BOARD_SIZE];
     for (int row = 0; row < BOARD_SIZE; ++row)
     {
         for (int col = 0; col < BOARD_SIZE; ++col)
         {
-            squares[row][col].setSize(sf::Vector2f(SQUARE_SIZE, SQUARE_SIZE));
+            squares[row][col].setSize(Vector2f(SQUARE_SIZE, SQUARE_SIZE));
             squares[row][col].setPosition(col * SQUARE_SIZE, row * SQUARE_SIZE);
             bool isLight = (row + col) % 2 == 0;
             squares[row][col].setFillColor(
-                isLight ? sf::Color::White : sf::Color::Blue);
+                isLight ? Color::White : Color::Blue);
         }
     }
     /*απο εδω και περα κανουμε load ολα τα μαυρα textures. μεχρο το επομενο παρομιο σχολιο ειναι ΜΟΝΟ μαυρα(note:ολα τα pieces ειναι το square που πρεπει
     να ειναι -1 λογο του μεγεθους του board)*/
 
     // load τον μαυρο πυργο
-    sf::Texture textureRook;
+    Texture textureRook;
     if (!textureRook.loadFromFile("pieces/black_ro.png"))
     {
         std::cerr << "Failed to load texture rook";
         return -1;
     }
-    sf::Sprite blackRookSprite(textureRook); // το sprite κανει refrence στην φωτο και λεει που να βαλει
+    Sprite blackRookSprite(textureRook); // το sprite κανει refrence στην φωτο και λεει που να βαλει
     blackRookSprite.setPosition(0 * SQUARE_SIZE, 0 * SQUARE_SIZE);
 
     // load black bisa
-    sf::Texture texturebis;
+    Texture texturebis;
     if (!texturebis.loadFromFile("pieces/black_bis.png"))
     {
         std::cerr << "Failed to load texture bis ";
         return -1;
     }
-    sf::Sprite blackBishopSprite(texturebis);
+    Sprite blackBishopSprite(texturebis);
     blackBishopSprite.setPosition(1 * SQUARE_SIZE, 0 * SQUARE_SIZE);
 
     // load black horse
-    sf::Texture textureHorse;
+    Texture textureHorse;
     if (!textureHorse.loadFromFile("pieces/black_horse.png"))
     {
         std::cerr << "failed to load texture  horse";
         return -1;
     }
-    sf::Sprite BlackHorseSprite(textureHorse);
+    Sprite BlackHorseSprite(textureHorse);
     BlackHorseSprite.setPosition(2 * SQUARE_SIZE, 0 * SQUARE_SIZE);
 
     // loab black queen
-    sf::Texture textureBqueen;
+    Texture textureBqueen;
     if (!textureBqueen.loadFromFile("pieces/black_que.png"))
     {
         std::cerr << "failled to load texture queen";
         return -1;
     }
-    sf::Sprite BlackQueenSprite(textureBqueen);
+    Sprite BlackQueenSprite(textureBqueen);
     BlackQueenSprite.setPosition(3 * SQUARE_SIZE, 0 * SQUARE_SIZE);
 
-    sf::Texture texturebking;
+    Texture texturebking;
     if (!texturebking.loadFromFile("pieces/black_king.png"))
     {
         std::cerr << "failled to load texture king";
         return -1;
     }
-    sf::Sprite BlackKingSprite(texturebking);
+    Sprite BlackKingSprite(texturebking);
     BlackKingSprite.setPosition(4 * SQUARE_SIZE, 0 * SQUARE_SIZE);
 
     // φιαχνω τις δευτερες και βαριεμαι πολυ γτ ξερω οτι ερχονται και τα πιωνια
-    sf::Sprite secondBbis(texturebis);
+    Sprite secondBbis(texturebis);
     secondBbis.setPosition(5 * SQUARE_SIZE, 0 * SQUARE_SIZE);
-    sf::Sprite secondBhorse(textureHorse);
+    Sprite secondBhorse(textureHorse);
     secondBhorse.setPosition(6 * SQUARE_SIZE, 0 * SQUARE_SIZE);
-    sf::Sprite secondBrook(textureRook);
+    Sprite secondBrook(textureRook);
     secondBrook.setPosition(7 * SQUARE_SIZE, 0 * SQUARE_SIZE);
 
     // black pawn :)
-    sf::Texture texturepawn;
+    Texture texturepawn;
     if (!texturepawn.loadFromFile("pieces/black_po.png"))
     {
         std::cerr << "failled to load texture pawn";
         return -1;
     }
-    sf::Sprite bp1(texturepawn);
-    bp1.setPosition(0 * SQUARE_SIZE, 1 * SQUARE_SIZE);
-    sf::Sprite bp2(texturepawn);
-    bp2.setPosition(1 * SQUARE_SIZE, 1 * SQUARE_SIZE);
-    sf::Sprite bp3(texturepawn);
-    bp3.setPosition(2 * SQUARE_SIZE, 1 * SQUARE_SIZE);
-    sf::Sprite bp4(texturepawn);
-    bp4.setPosition(3 * SQUARE_SIZE, 1 * SQUARE_SIZE);
-    sf::Sprite bp5(texturepawn);
-    bp5.setPosition(4 * SQUARE_SIZE, 1 * SQUARE_SIZE);
-    sf::Sprite bp6(texturepawn);
-    bp6.setPosition(5 * SQUARE_SIZE, 1 * SQUARE_SIZE);
-    sf::Sprite bp7(texturepawn);
-    bp7.setPosition(6 * SQUARE_SIZE, 1 * SQUARE_SIZE);
-    sf::Sprite bp8(texturepawn);
-    bp8.setPosition(7 * SQUARE_SIZE, 1 * SQUARE_SIZE);
 
-    // ολα τα load πριν απο αυτο το loap
+    Sprite blackpawn[BOARD_SIZE];
+    for (int i = 0; i < BOARD_SIZE; ++i)
+    {
+        blackpawn[i].setTexture(texturepawn);
+        blackpawn[i].setPosition(i * SQUARE_SIZE, 1 * SQUARE_SIZE);
+    }
     while (window.isOpen())
     {
-        sf::Event event;
+        Event event;
         while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
+            if (event.type == Event::Closed)
                 window.close();
         }
 
@@ -131,14 +121,9 @@ int main()
         window.draw(secondBbis);
         window.draw(secondBhorse);
         window.draw(secondBrook);
-        window.draw(bp1);
-        window.draw(bp2);
-        window.draw(bp3);
-        window.draw(bp4);
-        window.draw(bp5);
-        window.draw(bp6);
-        window.draw(bp7);
-        window.draw(bp8);
+
+        for (int i = 0; i < BOARD_SIZE; ++i)
+            window.draw(blackpawn[i]);
         /*black is done here!!!
         white is starting here*/
 
