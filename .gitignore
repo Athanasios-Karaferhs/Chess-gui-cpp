@@ -1,0 +1,7 @@
+# Compiled binaries
+chess
+*.o
+*.out
+*.exe
+.vscode/
+*.swp
