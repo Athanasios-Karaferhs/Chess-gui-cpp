@@ -3,16 +3,27 @@
 
 const int BOARD_SIZE = 8;
 const int SQUARE_SIZE = 70;
-const int WINDOW_SIZE = BOARD_SIZE * SQUARE_SIZE;
+const int BOARD_PIXELS = BOARD_SIZE * SQUARE_SIZE; // width/height of just the board
+const int PANEL_WIDTH = 300;                       // space for your side panel
+const int WINDOW_WIDTH = BOARD_PIXELS + PANEL_WIDTH;
+const int WINDOW_HEIGHT = BOARD_PIXELS;
 using namespace sf;
 
 int main()
 {
     RenderWindow window(
-        VideoMode(WINDOW_SIZE, WINDOW_SIZE),
+        VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT),
         "Chess :)");
-
     RectangleShape squares[BOARD_SIZE][BOARD_SIZE];
+    RectangleShape sidePanel;
+    RectangleShape separator;
+    separator.setSize(Vector2f(4, WINDOW_HEIGHT)); // 4px wide, full height
+    separator.setPosition(BOARD_PIXELS, 0);        // right at the board's edge
+    separator.setFillColor(Color::Black);
+
+    sidePanel.setSize(Vector2f(PANEL_WIDTH, WINDOW_HEIGHT));
+    sidePanel.setPosition(BOARD_PIXELS, 0);
+    sidePanel.setFillColor(Color(192, 192, 192));
     for (int row = 0; row < BOARD_SIZE; ++row)
     {
         for (int col = 0; col < BOARD_SIZE; ++col)
@@ -21,9 +32,40 @@ int main()
             squares[row][col].setPosition(col * SQUARE_SIZE, row * SQUARE_SIZE);
             bool isLight = (row + col) % 2 == 0;
             squares[row][col].setFillColor(
-                isLight ? Color::White : Color::Blue);
+                isLight ? Color::White : Color(0, 153, 76));
         }
     }
+    // load το font για τα γραμματα
+    Font font;
+    if (!font.loadFromFile("AdwaitaMono-Regular.ttf"))
+    {
+        std::cerr << "Failed to load font\n";
+        return -1;
+    }
+    // φταχνω τα γραματα για τις γραμμες
+    Text columnLabels[BOARD_SIZE];
+    std::string letters = "abcdefgh";
+    for (int i = 0; i < BOARD_SIZE; ++i)
+    {
+        columnLabels[i].setFont(font);
+        columnLabels[i].setString(std::string(1, letters[i]));
+        columnLabels[i].setCharacterSize(16);
+        columnLabels[i].setFillColor(Color::Black);
+        columnLabels[i].setPosition(i * SQUARE_SIZE + 5, WINDOW_HEIGHT - 20);
+    }
+
+    // εδω ειναι οι στιλες
+    Text rowsLables[BOARD_SIZE];
+    std::string numbers = "123456789";
+    for (int i = 0; i < BOARD_SIZE; ++i)
+    {
+        rowsLables[i].setFont(font);
+        rowsLables[i].setString(std::string(1, numbers[i]));
+        rowsLables[i].setCharacterSize(16);
+        rowsLables[i].setFillColor(Color::Black);
+        rowsLables[i].setPosition();
+    }
+
     /*απο εδω και περα κανουμε load ολα τα μαυρα textures. μεχρο το επομενο παρομιο σχολιο ειναι ΜΟΝΟ μαυρα(note:ολα τα pieces ειναι το square που πρεπει
     να ειναι -1 λογο του μεγεθους του board)*/
 
@@ -109,6 +151,9 @@ int main()
 
         window.clear();
 
+        window.draw(sidePanel);
+        window.draw(separator);
+
         for (int row = 0; row < BOARD_SIZE; ++row)
             for (int col = 0; col < BOARD_SIZE; ++col)
                 window.draw(squares[row][col]);
@@ -124,8 +169,15 @@ int main()
 
         for (int i = 0; i < BOARD_SIZE; ++i)
             window.draw(blackpawn[i]);
-        /*black is done here!!!
-        white is starting here*/
+        // lack is done here!!!
+
+        // εκτυπωση γραμμων(απο το α μεχρι το h)
+        for (int i = 0; i < BOARD_SIZE; ++i)
+            window.draw(columnLabels[i]);
+        // εκτυπωση στυλων
+        for (int i = 0; i < BOARD_SIZE; ++i)
+            window.draw(rowsLables[i]);
+        // white is starting here
 
         window.display();
     }
