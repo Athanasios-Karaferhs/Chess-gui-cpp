@@ -4,9 +4,9 @@
 const int BOARD_SIZE = 8;
 const int SQUARE_SIZE = 70;
 const int BOARD_PIXELS = BOARD_SIZE * SQUARE_SIZE; // width/height of just the board
-const int PANEL_WIDTH = 300;                       // space for your side panel
-const int WINDOW_WIDTH = BOARD_PIXELS + PANEL_WIDTH;
-const int WINDOW_HEIGHT = BOARD_PIXELS;
+const int PANEL_WIDTH = 300;
+const int WINDOW_WIDTH = BOARD_PIXELS + PANEL_WIDTH; // 840
+const int WINDOW_HEIGHT = BOARD_PIXELS;              // 8
 using namespace sf;
 
 int main()
@@ -56,16 +56,17 @@ int main()
 
     // εδω ειναι οι στιλες
     Text rowsLables[BOARD_SIZE];
-    std::string numbers = "123456789";
+    std::string numbers = "87654321";
     for (int i = 0; i < BOARD_SIZE; ++i)
     {
         rowsLables[i].setFont(font);
         rowsLables[i].setString(std::string(1, numbers[i]));
         rowsLables[i].setCharacterSize(16);
         rowsLables[i].setFillColor(Color::Black);
-        rowsLables[i].setPosition();
+        rowsLables[i].setPosition(0, i * SQUARE_SIZE + 30);
     }
 
+    // #######################################################################################################################################
     /*απο εδω και περα κανουμε load ολα τα μαυρα textures. μεχρο το επομενο παρομιο σχολιο ειναι ΜΟΝΟ μαυρα(note:ολα τα pieces ειναι το square που πρεπει
     να ειναι -1 λογο του μεγεθους του board)*/
 
@@ -140,6 +141,76 @@ int main()
         blackpawn[i].setTexture(texturepawn);
         blackpawn[i].setPosition(i * SQUARE_SIZE, 1 * SQUARE_SIZE);
     }
+    // #######################################################################################################################################
+    // WHITE TEXTURE STARTS HERE!!!
+    // #######################################################################################################################################
+    Texture texturewro;
+    if (!texturewro.loadFromFile("pieces/white_rook.png"))
+    {
+        std::cerr << "failed to load texture rook";
+        return -1;
+    }
+    Sprite whitero(texturewro);
+    whitero.setPosition(7 * SQUARE_SIZE, 7 * SQUARE_SIZE);
+
+    Texture textwbis;
+    if (!textwbis.loadFromFile("pieces/white_bis.png"))
+    {
+        std::cerr << "failed to load texture bis";
+        return -1;
+    }
+    Sprite whitebis(textwbis);
+    whitebis.setPosition(5 * SQUARE_SIZE, 7 * SQUARE_SIZE);
+
+    Texture textwhorse;
+    if (!textwhorse.loadFromFile("pieces/white_horse.png"))
+    {
+        std::cerr << "failed to load texture horse";
+        return -1;
+    }
+    Sprite whitehorse(textwhorse);
+    whitehorse.setPosition(6 * SQUARE_SIZE, 7 * SQUARE_SIZE);
+
+    Texture textwqueen;
+    if (!textwqueen.loadFromFile("pieces/white_queen.png"))
+    {
+        std::cerr << "Failed to laod white queen";
+        return -1;
+    }
+    Sprite whitequeen(textwqueen);
+    whitequeen.setPosition(3 * SQUARE_SIZE, 7 * SQUARE_SIZE);
+
+    Texture textwking;
+    if (!textwking.loadFromFile("pieces/white_king.png"))
+    {
+        std::cerr << "failed to load white king";
+        return -1;
+    }
+    Sprite whiteking(textwking);
+    whiteking.setPosition(4 * SQUARE_SIZE, 7 * SQUARE_SIZE);
+
+    Sprite secwbis(textwbis);
+    secwbis.setPosition(2 * SQUARE_SIZE, 7 * SQUARE_SIZE);
+    Sprite secwhor(textwhorse);
+    secwhor.setPosition(1 * SQUARE_SIZE, 7 * SQUARE_SIZE);
+    Sprite secwrok(texturewro);
+    secwrok.setPosition(0 * SQUARE_SIZE, 7 * SQUARE_SIZE);
+
+    Texture texturewpawn;
+    if (!texturewpawn.loadFromFile("pieces/white_po.png"))
+    {
+        std::cerr << "Failed to load white pawn";
+        return -1;
+    }
+    Sprite whitepawn[BOARD_SIZE];
+    for (int i = 0; i < BOARD_SIZE; ++i)
+    {
+        whitepawn[i].setTexture(texturewpawn);
+        whitepawn[i].setPosition(i * SQUARE_SIZE, 6 * SQUARE_SIZE);
+    }
+
+    // #######################################################################################################################################
+    //  προσοχη τι βαζβ απο εδω και κατω
     while (window.isOpen())
     {
         Event event;
@@ -157,6 +228,14 @@ int main()
         for (int row = 0; row < BOARD_SIZE; ++row)
             for (int col = 0; col < BOARD_SIZE; ++col)
                 window.draw(squares[row][col]);
+
+        // εκτυπωση γραμμων(απο το α μεχρι το h)
+        for (int i = 0; i < BOARD_SIZE; ++i)
+            window.draw(columnLabels[i]);
+        // εκτυπωση στυλων
+        for (int i = 0; i < BOARD_SIZE; ++i)
+            window.draw(rowsLables[i]);
+
         // black pieces
         window.draw(blackBishopSprite);
         window.draw(BlackHorseSprite);
@@ -169,15 +248,19 @@ int main()
 
         for (int i = 0; i < BOARD_SIZE; ++i)
             window.draw(blackpawn[i]);
-        // lack is done here!!!
+        // black is done here!!!
 
-        // εκτυπωση γραμμων(απο το α μεχρι το h)
-        for (int i = 0; i < BOARD_SIZE; ++i)
-            window.draw(columnLabels[i]);
-        // εκτυπωση στυλων
-        for (int i = 0; i < BOARD_SIZE; ++i)
-            window.draw(rowsLables[i]);
         // white is starting here
+        window.draw(whitero);
+        window.draw(whitehorse);
+        window.draw(whitebis);
+        window.draw(whiteking);
+        window.draw(whitequeen);
+        window.draw(secwbis);
+        window.draw(secwhor);
+        window.draw(secwrok);
+        for (int i = 0; i < BOARD_SIZE; ++i)
+            window.draw(whitepawn[i]);
 
         window.display();
     }
