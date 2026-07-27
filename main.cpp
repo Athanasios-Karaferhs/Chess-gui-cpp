@@ -185,7 +185,7 @@ int main()
                 int row = mouseY / SQUARE_SIZE;
 
                 if (selectedRow == -1)
-                {
+                { // επιλεγο πιο πιωνη θελω
                     if (board.at(row, col) != 0)
                     {
                         selectedRow = row;
@@ -194,11 +194,27 @@ int main()
                     }
                 }
                 else
-                {
-                    board.set(row, col, value);
-                    board.set(selectedRow, selectedCol, 0);
-                    selectedRow = -1;
-                    selectedCol = -1;
+                { // ελεγχος για το που παω. Δηλαδη αν τα χρωματα ειναι αντιθετα η ελευθερος χωρος φαε.
+                    if (board.at(row, col) == 0 || (board.at(selectedRow, selectedCol) < 0 && board.at(row, col) > 0) || (board.at(selectedRow, selectedCol) > 0 && board.at(row, col) < 0))
+                    {
+                        board.set(row, col, value);
+                        board.set(selectedRow, selectedCol, 0);
+                        selectedRow = -1;
+                        selectedCol = -1;
+                    }
+                    // σε περιπτωση που πατησω ενα πιωνη και μετα ενα αλλο πρεπει να παρω το 2ο πιωνη που πατηθηκε
+                    else
+                    {
+                        selectedRow = -1;
+                        selectedCol = -1;
+                        int mouseX = event.mouseButton.x;
+                        int mouseY = event.mouseButton.y;
+                        int col = mouseX / SQUARE_SIZE;
+                        int row = mouseY / SQUARE_SIZE;
+                        selectedRow = row;
+                        selectedCol = col;
+                        value = board.at(row, col);
+                    }
                 }
             }
         }
