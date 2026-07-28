@@ -1,4 +1,4 @@
-#pragma once
+#pragma once // kanoyme ensure oti kanei 1 fora compile
 
 class Board
 {

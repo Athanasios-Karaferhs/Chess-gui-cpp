@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "Board.h"
+#include "Rules.h"
 
 const int BOARD_SIZE = 8;
 const int SQUARE_SIZE = 70;
@@ -166,6 +167,7 @@ int main()
     // #######################################################################################################################################
 
     Board board;
+    pawnmove pawn;
     int value = 0;
     int selectedRow = -1, selectedCol = -1;
     // τι δουλευει μετα το ανοιγμα του παραθυρου
@@ -194,8 +196,8 @@ int main()
                     }
                 }
                 else
-                { // ελεγχος για το που παω. Δηλαδη αν τα χρωματα ειναι αντιθετα η ελευθερος χωρος φαε.
-                    if (board.at(row, col) == 0 || (board.at(selectedRow, selectedCol) < 0 && board.at(row, col) > 0) || (board.at(selectedRow, selectedCol) > 0 && board.at(row, col) < 0))
+                { // ελεγχος για το αν το μαυρο πιωνι μπορει να φαει.
+                    if (board.at(row, col) == 0 && (pawn.check_black(row, col, selectedCol, selectedRow, value) == 1 || pawn.check_black(row, col, selectedCol, selectedRow, value) == 2))
                     {
                         board.set(row, col, value);
                         board.set(selectedRow, selectedCol, 0);
