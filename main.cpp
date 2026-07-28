@@ -2,7 +2,8 @@
 #include <iostream>
 #include "Board.h"
 #include "Rules.h"
-
+#define WHITE 10
+#define BLACK -10
 const int BOARD_SIZE = 8;
 const int SQUARE_SIZE = 70;
 const int BOARD_PIXELS = BOARD_SIZE * SQUARE_SIZE; // width/height of just the board
@@ -197,14 +198,15 @@ int main()
                 }
                 else
                 { // ελεγχος για το αν το μαυρο πιωνι μπορει να φαει.
-                    if (board.at(row, col) == 0 && (pawn.check_black(row, col, selectedCol, selectedRow, value) == 1 || pawn.check_black(row, col, selectedCol, selectedRow, value) == 2))
+                    if ((value == 1 || value == -1) && (pawn.check_pawn(row, col, selectedCol, selectedRow, value) == 1 || pawn.check_pawn(row, col, selectedCol, selectedRow, value) == 2))
                     {
                         board.set(row, col, value);
                         board.set(selectedRow, selectedCol, 0);
                         selectedRow = -1;
                         selectedCol = -1;
                     }
-                    // σε περιπτωση που πατησω ενα πιωνη και μετα ενα αλλο πρεπει να παρω το 2ο πιωνη που πατηθηκε
+                    // else if (board.at)
+                    //   σε περιπτωση που πατησω ενα πιωνη και μετα ενα αλλο πρεπει να παρω το 2ο πιωνη που πατηθηκε
                     else
                     {
                         selectedRow = -1;
