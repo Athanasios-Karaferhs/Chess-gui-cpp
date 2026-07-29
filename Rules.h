@@ -52,3 +52,80 @@ public:
         return 0;
     }
 };
+
+class rookmove
+{
+public:
+    int check_rook(int row, int col, int selectedRow, int selectedCol, int value, Board &board)
+    {
+        /*θα κανουμε το βημα προς τα μπροστα. πρεπει να ελεγχο αν υπαρχει καποιος μπροστα του.δηλαδη στο θα εχω την θεση του rook και θα αφαιρεσω απο το 7. αν θεση+
+        το αποτελεσμα τις αφαιρεσης ειναι κενη παει παντου αν δεν ειναι δεν παει*/
+        int colcheck = selectedCol - col;
+        int sum = 0;
+        int target = board.at(row, col);
+        if (selectedRow != row)
+        {
+            int clear = (selectedRow > row) ? selectedRow - row : row - selectedRow;
+            // pros ta panw;
+            if (selectedRow > row)
+            {
+
+                for (int i = selectedRow; i >= row; i--)
+                {
+                    if (board.at(i, col) == 0)
+                    {
+                        sum += 1;
+                    }
+                }
+                if ((sum == clear || (board.at(row, col) < 0 && sum == (clear - 1))) && colcheck == 0)
+                {
+                    return 1;
+                }
+            }
+            // pros ta piso
+            else if (selectedRow < row)
+            {
+
+                for (int i = selectedRow; i <= row; i++)
+                {
+                    if (board.at(i, col) == 0)
+                    {
+                        sum += 1;
+                    }
+                }
+                if ((sum == clear || (board.at(row, col) > 0 && sum == (clear - 1))) && colcheck == 0)
+                    return 2;
+            }
+            else
+                return 0;
+        }
+        // εδω παει προς αριστερα η δεξια :D
+        else
+        {
+            int clearrow = abs(row - selectedRow);
+            int clearcol = (selectedCol < col) ? col - selectedCol : selectedCol - col;
+
+            if (selectedCol > col && clearrow == 0)
+            {
+                for (int i = selectedCol; i >= col; i--)
+                    if (board.at(row, i) == 0)
+                        sum += 1;
+
+                if (sum == clearcol || (board.at(row, col) < 0 && sum == (clearcol - 1)))
+                    return 2;
+            }
+            else if (selectedCol < col && clearrow == 0)
+            {
+                for (int i = selectedCol; i <= col; i++)
+                    if (board.at(row, i == 0))
+                        sum += 1;
+
+                if (sum == clearcol || (board.at(row, col) > 0 && sum == (clearcol - 1)))
+                    return 2;
+            }
+            else
+                return 0;
+        }
+        return 0;
+    }
+};
