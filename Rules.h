@@ -115,3 +115,36 @@ public:
         return 1;
     }
 };
+
+class kingmove
+{
+public:
+    int check_king(int row, int col, int selectedRow, int selectedCol, int value, Board &board)
+    {
+        int dRow = 0;
+        int dCol = 0;
+        if (row > selectedRow)
+            dRow = row - selectedRow;
+        else if (row < selectedRow)
+            dRow = selectedRow - row;
+        else
+            dRow = 0;
+
+        if (col > selectedCol)
+            dCol = col - selectedCol;
+        else if (col < selectedCol)
+            dCol = selectedCol - col;
+        else
+            dCol = 0;
+        if (dCol != 1 && dRow != 1)
+            return 0;
+
+        int mover = board.at(selectedRow, selectedCol);
+        int target = board.at(row, col);
+
+        if (target != 0 && ((target > 0) == (mover > 0)))
+            return 0;
+
+        return 1;
+    }
+};

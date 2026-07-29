@@ -171,6 +171,7 @@ int main()
     pawnmove pawn;
     rookmove rook;
     horsemove horse;
+    kingmove king;
     int value = 0;
     int selectedRow = -1, selectedCol = -1;
     // τι δουλευει μετα το ανοιγμα του παραθυρου
@@ -215,6 +216,13 @@ int main()
                         selectedCol = -1;
                     }
                     else if ((value == 2 || value == -2) && horse.check_horse(row, col, selectedRow, selectedCol, value, board) != 0)
+                    {
+                        board.set(row, col, value);
+                        board.set(selectedRow, selectedCol, 0);
+                        selectedRow = -1;
+                        selectedCol = -1;
+                    }
+                    else if ((value == -1 || value == 5) && king.check_king(row, col, selectedRow, selectedCol, value, board) != 0)
                     {
                         board.set(row, col, value);
                         board.set(selectedRow, selectedCol, 0);
