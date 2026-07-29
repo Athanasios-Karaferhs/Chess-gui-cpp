@@ -1,60 +1,54 @@
 #pragma once
 #include <cmath>
+#include "Board.h"
+
 class pawnmove
 {
 public:
-    int white_moved[8][8];
-    int black_moved[8][8];
+    bool white_moved[8] = {false};
+    bool black_moved[8] = {false};
 
-    pawnmove()
+    // 0 = illegal,1 = normal2 = double-step,3 = capture
+    int check_pawn(int row, int col, int selectedCol, int selectedRow, int value, Board &board)
     {
-        for (int i = 0; i < 8; i++)
-        {
-            for (int j = 0; j < 8; j++)
-            {
-                white_moved[i][j] = 0;
-                black_moved[i][j] = 0;
-            }
-        }
-    }
-    int rowcheck = 0;
-    int colCheck = -1;
-    int answer = -1;
+        int rowDiff = row - selectedRow;
+        int colDiff = col - selectedCol;
+        int direction = (value > 0) ? -1 : 1; // white moves toward row 0, black toward row 7
+        int targetValue = board.at(row, col);
 
-    int check_pawn(int row, int col, int selectedCol, int selectedRow, int value)
-    {
-        /*ετσω οτι στο row 1 που ειναι το μαυρο πιωνι θελω να παω 2 μπροστα(στο 3) θα πρεπει να κανω 3-1 βηματα*/
-        rowcheck = abs(row - selectedRow);
-        colCheck = col - selectedCol;
+        if (targetValue != 0 && ((targetValue > 0) == (value > 0)))
+            return 0;
 
-        if (rowcheck == 2 && colCheck == 0 && (white_moved[selectedRow][selectedCol] == 0 || black_moved[selectedRow][selectedCol] == 0))
+        if (colDiff == 0)
         {
-            if (value == 1)
+            if (targetValue != 0)
+                return 0;
+
+            if (rowDiff == direction)
+                return 1;
+
+            if (rowDiff == 2 * direction)
             {
-                if (selectedRow == 6)
+                bool startingRow = (value > 0) ? (selectedRow == 6) : (selectedRow == 1);
+                bool alreadyMoved = (value > 0) ? white_moved[selectedCol] : black_moved[selectedCol];
+                bool pathClear = board.at(selectedRow + direction, selectedCol) == 0;
+
+                if (startingRow && !alreadyMoved && pathClear)
                 {
-                    white_moved[selectedRow][selectedCol] = 1;
-                    answer = 2;
+                    (value > 0 ? white_moved[selectedCol] : black_moved[selectedCol]) = true;
+                    return 2;
                 }
             }
-            else
-            {
-                if (selectedRow == 1)
-                {
-                    black_moved[selectedRow][selectedCol] = 1;
-                    answer = 2;
-                }
-            }
-        }
-        else if (rowcheck == 1 && colCheck == 0)
-        {
-            answer = 1;
-        }
-        else
-        {
-            answer = 0;
+            return 0;
         }
 
-        return answer;
+        if (std::abs(colDiff) == 1 && rowDiff == direction) // διαγωνιος
+        {
+            if (targetValue != 0)
+                return 3;
+            return 0; // (en passant not handled yet)
+        }
+
+        return 0;
     }
 };

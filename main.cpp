@@ -198,7 +198,7 @@ int main()
                 }
                 else
                 { // ελεγχος για το αν το μαυρο πιωνι μπορει να φαει.
-                    if ((value == 1 || value == -1) && (pawn.check_pawn(row, col, selectedCol, selectedRow, value) == 1 || pawn.check_pawn(row, col, selectedCol, selectedRow, value) == 2))
+                    if ((value == 1 || value == -1) && pawn.check_pawn(row, col, selectedCol, selectedRow, value, board) != 0)
                     {
                         board.set(row, col, value);
                         board.set(selectedRow, selectedCol, 0);
