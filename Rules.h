@@ -52,6 +52,7 @@ public:
         return 0;
     }
 };
+
 class rookmove
 {
 public:
@@ -90,5 +91,27 @@ public:
 
             return (col > selectedCol) ? 1 : 2;
         }
+    }
+};
+
+class horsemove
+{
+public:
+    int check_horse(int row, int col, int selectedRow, int selectedCol, int value, Board &board)
+    {
+        int dRow = (row > selectedRow) ? row - selectedRow : selectedRow - row;
+        int dCol = (col > selectedCol) ? col - selectedCol : selectedCol - col;
+
+        bool isLShape = (dRow == 2 && dCol == 1) || (dRow == 1 && dCol == 2);
+        if (!isLShape)
+            return 0;
+
+        int mover = board.at(selectedRow, selectedCol);
+        int target = board.at(row, col);
+
+        if (target != 0 && ((target > 0) == (mover > 0)))
+            return 0;
+
+        return 1;
     }
 };

@@ -170,6 +170,7 @@ int main()
     Board board;
     pawnmove pawn;
     rookmove rook;
+    horsemove horse;
     int value = 0;
     int selectedRow = -1, selectedCol = -1;
     // τι δουλευει μετα το ανοιγμα του παραθυρου
@@ -207,6 +208,13 @@ int main()
                         selectedCol = -1;
                     } // rook
                     else if ((value == 4 || value == -4) && rook.check_rook(row, col, selectedRow, selectedCol, value, board) != 0)
+                    {
+                        board.set(row, col, value);
+                        board.set(selectedRow, selectedCol, 0);
+                        selectedRow = -1;
+                        selectedCol = -1;
+                    }
+                    else if ((value == 2 || value == -2) && horse.check_horse(row, col, selectedRow, selectedCol, value, board) != 0)
                     {
                         board.set(row, col, value);
                         board.set(selectedRow, selectedCol, 0);
