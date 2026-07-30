@@ -136,7 +136,26 @@ public:
             dCol = selectedCol - col;
         else
             dCol = 0;
-        if (dCol != 1 && dRow != 1)
+
+        if ((dCol == 1 && dRow == 0) || (dCol == 0 && dRow == 1) || (dCol == 1 && dRow == 1))
+            return 1;
+
+        int mover = board.at(selectedRow, selectedCol);
+        int target = board.at(row, col);
+
+        if (target != 0 && ((target > 0) == (mover > 0)))
+            return 0;
+
+        return 0;
+    }
+};
+
+class bisopmove
+{
+public:
+    int check_bis(int row, int col, int selectedRow, int selectedCol, int value, Board &board)
+    {
+        if (std::abs(row - selectedRow) != std::abs(col - selectedCol))
             return 0;
 
         int mover = board.at(selectedRow, selectedCol);

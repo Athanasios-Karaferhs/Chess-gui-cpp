@@ -172,6 +172,7 @@ int main()
     rookmove rook;
     horsemove horse;
     kingmove king;
+    bisopmove bisop;
     int value = 0;
     int selectedRow = -1, selectedCol = -1;
     // τι δουλευει μετα το ανοιγμα του παραθυρου
@@ -222,7 +223,14 @@ int main()
                         selectedRow = -1;
                         selectedCol = -1;
                     }
-                    else if ((value == -1 || value == 5) && king.check_king(row, col, selectedRow, selectedCol, value, board) != 0)
+                    else if ((value == -5 || value == 5) && king.check_king(row, col, selectedRow, selectedCol, value, board) != 0)
+                    {
+                        board.set(row, col, value);
+                        board.set(selectedRow, selectedCol, 0);
+                        selectedRow = -1;
+                        selectedCol = -1;
+                    }
+                    else if ((value == -3 || value == 3) && bisop.check_bis(row, col, selectedRow, selectedCol, value, board) != 0)
                     {
                         board.set(row, col, value);
                         board.set(selectedRow, selectedCol, 0);
