@@ -123,6 +123,7 @@ public:
     {
         int dRow = 0;
         int dCol = 0;
+
         if (row > selectedRow)
             dRow = row - selectedRow;
         else if (row < selectedRow)

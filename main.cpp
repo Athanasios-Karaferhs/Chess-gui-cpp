@@ -175,7 +175,7 @@ int main()
     kingmove king;
     bisopmove bisop;
     queenmove queen;
-
+    can_it_move canit;
     move swap;
     int turn = WHITE;
     int value = 0;
@@ -229,6 +229,7 @@ int main()
                         board.set(selectedRow, selectedCol, 0);
                         selectedRow = -1;
                         selectedCol = -1;
+                        canit.checker(row, col, value, board); // παιρνας τα row col γιατι εκει πας αλλα στο function ειναι selected γιατι απο εκει ξεκινας για να πας στον βασιλια
                         turn = swap.change_turn(turn);
                     }
                     else if (((value == -5 && turn == BLACK) || (value == 5 && turn == WHITE)) && king.check_king(row, col, selectedRow, selectedCol, value, board) != 0)

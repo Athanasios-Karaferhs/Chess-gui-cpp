@@ -23,24 +23,34 @@ public:
     bisopmove bis;
     horsemove horse;
     pawnmove pawn;
-    /*  col ---->
-        row
-        |
-        |
-        \/
-    */
-    int Krow;
-    int Kcol;
-    // βρισκω που βρισκεται ο βασιλιας
-    for (int i = 0; i < 64; i++)
+    bool check = false;
+    bool checker(int selectedRow, int selectedCol, int value, Board &board)
     {
-        for (int j = 0; j < 64; j++)
+        int Krow;
+        int Kcol;
+        // βρισκω που βρισκεται ο βασιλιας
+        for (int i = 0; i < 8; i++)
         {
-            if (board.at(i, j) == 5 || board.at(i, j) == -5)
+            for (int j = 0; j < 8; j++)
             {
-                Krow = j;
-                Kcol = i;
+                if (board.at(i, j) == -5)
+                {
+                    Krow = i;
+                    Kcol = j;
+                }
             }
         }
+
+        // θα ελεγχω αν το καθε πιονι μπορει να παει στην παραπανω θεση.
+        if (horse.check_horse(selectedRow, selectedCol, Krow, Kcol, value, board) != 0)
+            check = true;
+        else if (queen.check_queen(selectedRow, selectedCol, Krow, Kcol, value, board) != 0)
+            check = true;
+        else if (bis.check_bis(selectedRow, selectedCol, Krow, Kcol, value, board) != 0)
+            check = true;
+        else if (rook.check_rook(selectedRow, selectedCol, Krow, Kcol, value, board) != 0)
+            check = true;
+        // για το πιονει πρεπει να δω καποια πραγματα
+        return check;
     }
 };
