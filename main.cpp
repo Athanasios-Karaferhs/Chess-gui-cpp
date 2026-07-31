@@ -2,8 +2,9 @@
 #include <iostream>
 #include "Board.h"
 #include "Rules.h"
-#define WHITE 10
-#define BLACK -10
+#include "Gamestate.h"
+#define WHITE 1
+#define BLACK -1
 const int BOARD_SIZE = 8;
 const int SQUARE_SIZE = 70;
 const int BOARD_PIXELS = BOARD_SIZE * SQUARE_SIZE; // width/height of just the board
@@ -174,6 +175,9 @@ int main()
     kingmove king;
     bisopmove bisop;
     queenmove queen;
+
+    move swap;
+    int turn = WHITE;
     int value = 0;
     int selectedRow = -1, selectedCol = -1;
     // τι δουλευει μετα το ανοιγμα του παραθυρου
@@ -203,47 +207,53 @@ int main()
                 }
                 else
                 { // ελεγχος για το αν το μαυρο πιωνι μπορει να φαει.
-                    if ((value == 1 || value == -1) && pawn.check_pawn(row, col, selectedCol, selectedRow, value, board) != 0)
+                    if (((value == 1 && turn == WHITE) || (value == -1 && turn == BLACK)) && pawn.check_pawn(row, col, selectedCol, selectedRow, value, board) != 0)
                     {
+                        turn = swap.change_turn(turn);
                         board.set(row, col, value);
                         board.set(selectedRow, selectedCol, 0);
                         selectedRow = -1;
                         selectedCol = -1;
                     } // rook
-                    else if ((value == 4 || value == -4) && rook.check_rook(row, col, selectedRow, selectedCol, value, board) != 0)
+                    else if (((value == 4 && turn == WHITE) || (value == -4 && turn == BLACK)) && rook.check_rook(row, col, selectedRow, selectedCol, value, board) != 0)
                     {
                         board.set(row, col, value);
                         board.set(selectedRow, selectedCol, 0);
                         selectedRow = -1;
                         selectedCol = -1;
+                        turn = swap.change_turn(turn);
                     }
-                    else if ((value == 2 || value == -2) && horse.check_horse(row, col, selectedRow, selectedCol, value, board) != 0)
+                    else if (((value == 2 && turn == WHITE) || (value == -2 && turn == BLACK)) && horse.check_horse(row, col, selectedRow, selectedCol, value, board) != 0)
                     {
                         board.set(row, col, value);
                         board.set(selectedRow, selectedCol, 0);
                         selectedRow = -1;
                         selectedCol = -1;
+                        turn = swap.change_turn(turn);
                     }
-                    else if ((value == -5 || value == 5) && king.check_king(row, col, selectedRow, selectedCol, value, board) != 0)
+                    else if (((value == -5 && turn == BLACK) || (value == 5 && turn == WHITE)) && king.check_king(row, col, selectedRow, selectedCol, value, board) != 0)
                     {
                         board.set(row, col, value);
                         board.set(selectedRow, selectedCol, 0);
                         selectedRow = -1;
                         selectedCol = -1;
+                        turn = swap.change_turn(turn);
                     }
-                    else if ((value == -3 || value == 3) && bisop.check_bis(row, col, selectedRow, selectedCol, value, board) != 0)
+                    else if (((value == -3 && turn == BLACK) || (value == 3 && turn == WHITE)) && bisop.check_bis(row, col, selectedRow, selectedCol, value, board) != 0)
                     {
                         board.set(row, col, value);
                         board.set(selectedRow, selectedCol, 0);
                         selectedRow = -1;
                         selectedCol = -1;
+                        turn = swap.change_turn(turn);
                     }
-                    else if ((value == -6 || value == 6) && queen.check_queen(row, col, selectedRow, selectedCol, value, board) != 0)
+                    else if (((value == -6 && turn == BLACK) || (value == 6 && turn == WHITE)) && queen.check_queen(row, col, selectedRow, selectedCol, value, board) != 0)
                     {
                         board.set(row, col, value);
                         board.set(selectedRow, selectedCol, 0);
                         selectedRow = -1;
                         selectedCol = -1;
+                        turn = swap.change_turn(turn);
                     }
                     //   σε περιπτωση που πατησω ενα πιωνη και μετα ενα αλλο πρεπει να παρω το 2ο πιωνη που πατηθηκε
                     else
