@@ -59,7 +59,7 @@ public:
     int check_rook(int row, int col, int selectedRow, int selectedCol, int value, Board &board)
     {
         int mover = board.at(selectedRow, selectedCol);
-        int target = board.at(row, col); // destination square
+        int target = board.at(row, col);
 
         // ελεγχοι
         if (row != selectedRow && col != selectedCol)
@@ -137,14 +137,13 @@ public:
         else
             dCol = 0;
 
-        if ((dCol == 1 && dRow == 0) || (dCol == 0 && dRow == 1) || (dCol == 1 && dRow == 1))
-            return 1;
-
         int mover = board.at(selectedRow, selectedCol);
         int target = board.at(row, col);
 
         if (target != 0 && ((target > 0) == (mover > 0)))
             return 0;
+        if ((dCol == 1 && dRow == 0) || (dCol == 0 && dRow == 1) || (dCol == 1 && dRow == 1))
+            return 1;
 
         return 0;
     }
@@ -158,6 +157,20 @@ public:
         if (std::abs(row - selectedRow) != std::abs(col - selectedCol))
             return 0;
 
+        int Rstep = (row > selectedRow) ? 1 : -1;
+        int Cstep = (col > selectedCol) ? 1 : -1;
+
+        int i = selectedRow + Rstep;
+        int j = selectedCol + Cstep;
+
+        while (i != row)
+        {
+            if (board.at(i, j) != 0)
+                return 0;
+            i += Rstep;
+            j += Cstep;
+        }
+
         int mover = board.at(selectedRow, selectedCol);
         int target = board.at(row, col);
 
@@ -165,5 +178,28 @@ public:
             return 0;
 
         return 1;
+    }
+};
+
+class queenmove
+{
+public:
+    int check_queen(int row, int col, int selectedRow, int selectedCol, int value, Board &board)
+    {
+        rookmove rook;
+        bisopmove bis;
+
+        bool forw = ((col - selectedCol == 0 && row - selectedRow != 0) || (col - selectedCol != 0 && row - selectedRow == 0));
+
+        if (forw)
+        {
+            return rook.check_rook(row, col, selectedRow, selectedCol, value, board);
+        }
+        else if (std::abs(row - selectedRow) == std::abs(col - selectedCol))
+        {
+            return bis.check_bis(row, col, selectedRow, selectedCol, value, board);
+        }
+
+        return 0; // αν δεν μπαει ουτε μπροστα ουτε πλαγια
     }
 };
