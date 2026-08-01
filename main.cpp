@@ -177,6 +177,7 @@ int main()
     queenmove queen;
     can_it_move canit;
     move swap;
+    bool check = false;
     int turn = WHITE;
     int value = 0;
     int selectedRow = -1, selectedCol = -1;
@@ -186,11 +187,14 @@ int main()
         Event event;
         while (window.pollEvent(event))
         {
+            if (check == true)
+                value = -1 * value;
             if (event.type == Event::Closed)
                 window.close();
 
             if (event.type == Event::MouseButtonPressed)
             {
+
                 int mouseX = event.mouseButton.x;
                 int mouseY = event.mouseButton.y;
                 int col = mouseX / SQUARE_SIZE;
@@ -202,7 +206,8 @@ int main()
                     {
                         selectedRow = row;
                         selectedCol = col;
-                        value = board.at(row, col);
+                        if (check != true)
+                            value = board.at(row, col);
                     }
                 }
                 else
@@ -229,7 +234,16 @@ int main()
                         board.set(selectedRow, selectedCol, 0);
                         selectedRow = -1;
                         selectedCol = -1;
-                        canit.checker(row, col, value, board); // παιρνας τα row col γιατι εκει πας αλλα στο function ειναι selected γιατι απο εκει ξεκινας για να πας στον βασιλια
+                        if (canit.checker(row, col, value, board) == true)
+                        {
+                            if (turn == WHITE)
+                            {
+                                value = -5;
+                                check = true;
+                            }
+                            else
+                                value = 5;
+                        } // παιρνας τα row col γιατι εκει πας αλλα στο function ειναι selected γιατι απο εκει ξεκινας για να πας στον βασιλια
                         turn = swap.change_turn(turn);
                     }
                     else if (((value == -5 && turn == BLACK) || (value == 5 && turn == WHITE)) && king.check_king(row, col, selectedRow, selectedCol, value, board) != 0)
