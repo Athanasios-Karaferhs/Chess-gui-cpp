@@ -214,37 +214,55 @@ int main()
             { // ελεγχος για το αν το μαυρο πιωνι μπορει να φαει.
                 if (((value == 1 && turn == WHITE) || (value == -1 && turn == BLACK)) && pawn.check_pawn(row, col, selectedCol, selectedRow, value, board) != 0)
                 {
-                    turn = swap.change_turn(turn);
+                    int captured = board.at(row, col);
                     board.set(row, col, value);
                     board.set(selectedRow, selectedCol, 0);
-                    selectedRow = -1;
-                    selectedCol = -1;
+
+                    if (canit.checker(turn, board))
+                    {
+                        // ελεγχος αν αφηνω τον δικο μου βασιλια σε check
+                        board.set(selectedRow, selectedCol, value);
+                        board.set(row, col, captured);
+                    }
+                    else
+                    {
+                        // move stands
+                        selectedRow = -1;
+                        selectedCol = -1;
+                        turn = swap.change_turn(turn);
+                    }
                 } // rook
                 else if (((value == 4 && turn == WHITE) || (value == -4 && turn == BLACK)) && rook.check_rook(row, col, selectedRow, selectedCol, value, board) != 0)
                 {
-                    board.set(row, col, value);
-                    board.set(selectedRow, selectedCol, 0);
-                    selectedRow = -1;
-                    selectedCol = -1;
-                    turn = swap.change_turn(turn);
-                }
-                else if (((value == 2 && turn == WHITE) || (value == -2 && turn == BLACK)) &&
-                         horse.check_horse(row, col, selectedRow, selectedCol, value, board) != 0)
-                {
-                    // remember what was on the destination square, in case we need to undo a capture
                     int captured = board.at(row, col);
-
-                    // tentatively make the move
                     board.set(row, col, value);
                     board.set(selectedRow, selectedCol, 0);
 
-                    // did this move leave my own king in check?
                     if (canit.checker(turn, board))
                     {
-                        // illegal — undo the move
+                        // ελεγχος αν αφηνω τον δικο μου βασιλια σε check
                         board.set(selectedRow, selectedCol, value);
                         board.set(row, col, captured);
-                        // move rejected: don't clear selection, don't swap turn
+                    }
+                    else
+                    {
+                        // move stands
+                        selectedRow = -1;
+                        selectedCol = -1;
+                        turn = swap.change_turn(turn);
+                    }
+                }
+                else if (((value == 2 && turn == WHITE) || (value == -2 && turn == BLACK)) && horse.check_horse(row, col, selectedRow, selectedCol, value, board) != 0)
+                {
+                    int captured = board.at(row, col);
+                    board.set(row, col, value);
+                    board.set(selectedRow, selectedCol, 0);
+
+                    if (canit.checker(turn, board))
+                    {
+                        // ελεγχος αν αφηνω τον δικο μου βασιλια σε check
+                        board.set(selectedRow, selectedCol, value);
+                        board.set(row, col, captured);
                     }
                     else
                     {
@@ -256,27 +274,63 @@ int main()
                 }
                 else if (((value == -5 && turn == BLACK) || (value == 5 && turn == WHITE)) && king.check_king(row, col, selectedRow, selectedCol, value, board) != 0)
                 {
+                    int captured = board.at(row, col);
                     board.set(row, col, value);
                     board.set(selectedRow, selectedCol, 0);
-                    selectedRow = -1;
-                    selectedCol = -1;
-                    turn = swap.change_turn(turn);
+
+                    if (canit.checker(turn, board))
+                    {
+                        // ελεγχος αν αφηνω τον δικο μου βασιλια σε check
+                        board.set(selectedRow, selectedCol, value);
+                        board.set(row, col, captured);
+                    }
+                    else
+                    {
+                        // move stands
+                        selectedRow = -1;
+                        selectedCol = -1;
+                        turn = swap.change_turn(turn);
+                    }
                 }
                 else if (((value == -3 && turn == BLACK) || (value == 3 && turn == WHITE)) && bisop.check_bis(row, col, selectedRow, selectedCol, value, board) != 0)
                 {
+                    int captured = board.at(row, col);
                     board.set(row, col, value);
                     board.set(selectedRow, selectedCol, 0);
-                    selectedRow = -1;
-                    selectedCol = -1;
-                    turn = swap.change_turn(turn);
+
+                    if (canit.checker(turn, board))
+                    {
+                        // ελεγχος αν αφηνω τον δικο μου βασιλια σε check
+                        board.set(selectedRow, selectedCol, value);
+                        board.set(row, col, captured);
+                    }
+                    else
+                    {
+                        // move stands
+                        selectedRow = -1;
+                        selectedCol = -1;
+                        turn = swap.change_turn(turn);
+                    }
                 }
                 else if (((value == -6 && turn == BLACK) || (value == 6 && turn == WHITE)) && queen.check_queen(row, col, selectedRow, selectedCol, value, board) != 0)
                 {
+                    int captured = board.at(row, col);
                     board.set(row, col, value);
                     board.set(selectedRow, selectedCol, 0);
-                    selectedRow = -1;
-                    selectedCol = -1;
-                    turn = swap.change_turn(turn);
+
+                    if (canit.checker(turn, board))
+                    {
+                        // ελεγχος αν αφηνω τον δικο μου βασιλια σε check
+                        board.set(selectedRow, selectedCol, value);
+                        board.set(row, col, captured);
+                    }
+                    else
+                    {
+                        // move stands
+                        selectedRow = -1;
+                        selectedCol = -1;
+                        turn = swap.change_turn(turn);
+                    }
                 }
                 //   σε περιπτωση που πατησω ενα πιωνη και μετα ενα αλλο πρεπει να παρω το 2ο πιωνη που πατηθηκε
                 else
