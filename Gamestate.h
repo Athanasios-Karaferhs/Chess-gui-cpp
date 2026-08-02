@@ -10,7 +10,6 @@ public:
             turn = BLACK;
         else
             turn = WHITE;
-        //-1 μαυρο,1 ασπρο
         return turn;
     }
 };
@@ -23,17 +22,19 @@ public:
     bisopmove bis;
     horsemove horse;
     pawnmove pawn;
-    bool check = false;
-    bool checker(int selectedRow, int selectedCol, int value, Board &board)
+
+    bool checker(int value, Board &board)
     {
-        int Krow;
-        int Kcol;
-        // βρισκω που βρισκεται ο βασιλιας
+        int Krow = -1;
+        int Kcol = -1;
+        int kingValue = (value == WHITE) ? 5 : -5;
+
+        // βρισκω που βρισκεται ο βασιλιας που ελεγχω
         for (int i = 0; i < 8; i++)
         {
             for (int j = 0; j < 8; j++)
             {
-                if (board.at(i, j) == -5)
+                if (board.at(i, j) == kingValue)
                 {
                     Krow = i;
                     Kcol = j;
@@ -41,16 +42,34 @@ public:
             }
         }
 
-        // θα ελεγχω αν το καθε πιονι μπορει να παει στην παραπανω θεση.
-        if (horse.check_horse(selectedRow, selectedCol, Krow, Kcol, value, board) != 0)
-            check = true;
-        else if (queen.check_queen(selectedRow, selectedCol, Krow, Kcol, value, board) != 0)
-            check = true;
-        else if (bis.check_bis(selectedRow, selectedCol, Krow, Kcol, value, board) != 0)
-            check = true;
-        else if (rook.check_rook(selectedRow, selectedCol, Krow, Kcol, value, board) != 0)
-            check = true;
-        // για το πιονει πρεπει να δω καποια πραγματα
-        return check;
+        // τωρα ψαχνω ολο το board για εχθρικα κομματια που μπορουν να φτασουν εκει
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                int piece = board.at(i, j);
+                if (piece == 0)
+                    continue;
+
+                bool isEnemy = (value == WHITE) ? (piece < 0) : (piece > 0);
+                if (!isEnemy)
+                    continue;
+
+                int type = std::abs(piece);
+
+                if (type == 2 && horse.check_horse(Krow, Kcol, i, j, piece, board) != 0)
+                    return true;
+                if (type == 6 && queen.check_queen(Krow, Kcol, i, j, piece, board) != 0)
+                    return true;
+                if (type == 3 && bis.check_bis(Krow, Kcol, i, j, piece, board) != 0)
+                    return true;
+                if (type == 4 && rook.check_rook(Krow, Kcol, i, j, piece, board) != 0)
+                    return true;
+                if (type == 1 && pawn.check_pawn(Krow, Kcol, j, i, piece, board) == 3)
+                    return true;
+            }
+        }
+
+        return false;
     }
 };

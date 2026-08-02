@@ -177,112 +177,119 @@ int main()
     queenmove queen;
     can_it_move canit;
     move swap;
-    bool check = false;
+    bool checki = false;
     int turn = WHITE;
     int value = 0;
     int selectedRow = -1, selectedCol = -1;
     // τι δουλευει μετα το ανοιγμα του παραθυρου
+    int newrow = -1;
+    int newcol = -1;
     while (window.isOpen())
     {
         Event event;
         while (window.pollEvent(event))
         {
-            if (check == true)
-                value = -1 * value;
             if (event.type == Event::Closed)
                 window.close();
+        }
+        if (event.type == Event::MouseButtonPressed)
+        {
 
-            if (event.type == Event::MouseButtonPressed)
+            int mouseX = event.mouseButton.x;
+            int mouseY = event.mouseButton.y;
+            int col = mouseX / SQUARE_SIZE;
+            int row = mouseY / SQUARE_SIZE;
+
+            if (selectedRow == -1)
             {
-
-                int mouseX = event.mouseButton.x;
-                int mouseY = event.mouseButton.y;
-                int col = mouseX / SQUARE_SIZE;
-                int row = mouseY / SQUARE_SIZE;
-
-                if (selectedRow == -1)
-                { // επιλεγο πιο πιωνη θελω
-                    if (board.at(row, col) != 0)
-                    {
-                        selectedRow = row;
-                        selectedCol = col;
-                        if (check != true)
-                            value = board.at(row, col);
-                    }
+                // επιλεγο πιο πιωνη θελω
+                if (board.at(row, col) != 0)
+                {
+                    selectedRow = row;
+                    selectedCol = col;
+                    value = board.at(selectedRow, selectedCol);
                 }
-                else
-                { // ελεγχος για το αν το μαυρο πιωνι μπορει να φαει.
-                    if (((value == 1 && turn == WHITE) || (value == -1 && turn == BLACK)) && pawn.check_pawn(row, col, selectedCol, selectedRow, value, board) != 0)
+            }
+            else
+            { // ελεγχος για το αν το μαυρο πιωνι μπορει να φαει.
+                if (((value == 1 && turn == WHITE) || (value == -1 && turn == BLACK)) && pawn.check_pawn(row, col, selectedCol, selectedRow, value, board) != 0)
+                {
+                    turn = swap.change_turn(turn);
+                    board.set(row, col, value);
+                    board.set(selectedRow, selectedCol, 0);
+                    selectedRow = -1;
+                    selectedCol = -1;
+                } // rook
+                else if (((value == 4 && turn == WHITE) || (value == -4 && turn == BLACK)) && rook.check_rook(row, col, selectedRow, selectedCol, value, board) != 0)
+                {
+                    board.set(row, col, value);
+                    board.set(selectedRow, selectedCol, 0);
+                    selectedRow = -1;
+                    selectedCol = -1;
+                    turn = swap.change_turn(turn);
+                }
+                else if (((value == 2 && turn == WHITE) || (value == -2 && turn == BLACK)) &&
+                         horse.check_horse(row, col, selectedRow, selectedCol, value, board) != 0)
+                {
+                    // remember what was on the destination square, in case we need to undo a capture
+                    int captured = board.at(row, col);
+
+                    // tentatively make the move
+                    board.set(row, col, value);
+                    board.set(selectedRow, selectedCol, 0);
+
+                    // did this move leave my own king in check?
+                    if (canit.checker(turn, board))
                     {
-                        turn = swap.change_turn(turn);
-                        board.set(row, col, value);
-                        board.set(selectedRow, selectedCol, 0);
-                        selectedRow = -1;
-                        selectedCol = -1;
-                    } // rook
-                    else if (((value == 4 && turn == WHITE) || (value == -4 && turn == BLACK)) && rook.check_rook(row, col, selectedRow, selectedCol, value, board) != 0)
-                    {
-                        board.set(row, col, value);
-                        board.set(selectedRow, selectedCol, 0);
-                        selectedRow = -1;
-                        selectedCol = -1;
-                        turn = swap.change_turn(turn);
+                        // illegal — undo the move
+                        board.set(selectedRow, selectedCol, value);
+                        board.set(row, col, captured);
+                        // move rejected: don't clear selection, don't swap turn
                     }
-                    else if (((value == 2 && turn == WHITE) || (value == -2 && turn == BLACK)) && horse.check_horse(row, col, selectedRow, selectedCol, value, board) != 0)
-                    {
-                        board.set(row, col, value);
-                        board.set(selectedRow, selectedCol, 0);
-                        selectedRow = -1;
-                        selectedCol = -1;
-                        if (canit.checker(row, col, value, board) == true)
-                        {
-                            if (turn == WHITE)
-                            {
-                                value = -5;
-                                check = true;
-                            }
-                            else
-                                value = 5;
-                        } // παιρνας τα row col γιατι εκει πας αλλα στο function ειναι selected γιατι απο εκει ξεκινας για να πας στον βασιλια
-                        turn = swap.change_turn(turn);
-                    }
-                    else if (((value == -5 && turn == BLACK) || (value == 5 && turn == WHITE)) && king.check_king(row, col, selectedRow, selectedCol, value, board) != 0)
-                    {
-                        board.set(row, col, value);
-                        board.set(selectedRow, selectedCol, 0);
-                        selectedRow = -1;
-                        selectedCol = -1;
-                        turn = swap.change_turn(turn);
-                    }
-                    else if (((value == -3 && turn == BLACK) || (value == 3 && turn == WHITE)) && bisop.check_bis(row, col, selectedRow, selectedCol, value, board) != 0)
-                    {
-                        board.set(row, col, value);
-                        board.set(selectedRow, selectedCol, 0);
-                        selectedRow = -1;
-                        selectedCol = -1;
-                        turn = swap.change_turn(turn);
-                    }
-                    else if (((value == -6 && turn == BLACK) || (value == 6 && turn == WHITE)) && queen.check_queen(row, col, selectedRow, selectedCol, value, board) != 0)
-                    {
-                        board.set(row, col, value);
-                        board.set(selectedRow, selectedCol, 0);
-                        selectedRow = -1;
-                        selectedCol = -1;
-                        turn = swap.change_turn(turn);
-                    }
-                    //   σε περιπτωση που πατησω ενα πιωνη και μετα ενα αλλο πρεπει να παρω το 2ο πιωνη που πατηθηκε
                     else
                     {
+                        // move stands
                         selectedRow = -1;
                         selectedCol = -1;
-                        int mouseX = event.mouseButton.x;
-                        int mouseY = event.mouseButton.y;
-                        int col = mouseX / SQUARE_SIZE;
-                        int row = mouseY / SQUARE_SIZE;
-                        selectedRow = row;
-                        selectedCol = col;
-                        value = board.at(row, col);
+                        turn = swap.change_turn(turn);
                     }
+                }
+                else if (((value == -5 && turn == BLACK) || (value == 5 && turn == WHITE)) && king.check_king(row, col, selectedRow, selectedCol, value, board) != 0)
+                {
+                    board.set(row, col, value);
+                    board.set(selectedRow, selectedCol, 0);
+                    selectedRow = -1;
+                    selectedCol = -1;
+                    turn = swap.change_turn(turn);
+                }
+                else if (((value == -3 && turn == BLACK) || (value == 3 && turn == WHITE)) && bisop.check_bis(row, col, selectedRow, selectedCol, value, board) != 0)
+                {
+                    board.set(row, col, value);
+                    board.set(selectedRow, selectedCol, 0);
+                    selectedRow = -1;
+                    selectedCol = -1;
+                    turn = swap.change_turn(turn);
+                }
+                else if (((value == -6 && turn == BLACK) || (value == 6 && turn == WHITE)) && queen.check_queen(row, col, selectedRow, selectedCol, value, board) != 0)
+                {
+                    board.set(row, col, value);
+                    board.set(selectedRow, selectedCol, 0);
+                    selectedRow = -1;
+                    selectedCol = -1;
+                    turn = swap.change_turn(turn);
+                }
+                //   σε περιπτωση που πατησω ενα πιωνη και μετα ενα αλλο πρεπει να παρω το 2ο πιωνη που πατηθηκε
+                else
+                {
+                    selectedRow = -1;
+                    selectedCol = -1;
+                    int mouseX = event.mouseButton.x;
+                    int mouseY = event.mouseButton.y;
+                    int col = mouseX / SQUARE_SIZE;
+                    int row = mouseY / SQUARE_SIZE;
+                    selectedRow = row;
+                    selectedCol = col;
+                    value = board.at(row, col);
                 }
             }
         }
