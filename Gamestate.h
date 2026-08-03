@@ -74,50 +74,53 @@ public:
         return false;
     }
 };
-
-bool isCheckmate(int turn, Board &board)
+class checkmate
 {
-    kingmove king;
-    can_it_move check;
-
-    if (!check.checker(turn, board))
-        return false;
-
-    int kingValue = (turn == WHITE) ? 5 : -5;
-
-    int Krow = -1, Kcol = -1;
-    for (int i = 0; i < 8; i++)
+public:
+    bool isCheckmate(int turn, Board &board)
     {
-        for (int j = 0; j < 8; j++)
+        kingmove king;
+        can_it_move check;
+
+        if (!check.checker(turn, board))
+            return false;
+
+        int kingValue = (turn == WHITE) ? 5 : -5;
+
+        int Krow = -1, Kcol = -1;
+        for (int i = 0; i < 8; i++)
         {
-            if (board.at(i, j) == kingValue)
+            for (int j = 0; j < 8; j++)
             {
-                Krow = i;
-                Kcol = j;
+                if (board.at(i, j) == kingValue)
+                {
+                    Krow = i;
+                    Kcol = j;
+                }
             }
         }
-    }
 
-    for (int i = Krow - 1; i <= Krow + 1; i++)
-    {
-        for (int j = Kcol - 1; j <= Kcol + 1; j++)
+        for (int i = Krow - 1; i <= Krow + 1; i++)
         {
+            for (int j = Kcol - 1; j <= Kcol + 1; j++)
+            {
 
-            if (king.check_king(i, j, Krow, Kcol, kingValue, board) == 0)
-                continue;
+                if (king.check_king(i, j, Krow, Kcol, kingValue, board) == 0)
+                    continue;
 
-            int captured = board.at(i, j);
-            board.set(i, j, kingValue);
-            board.set(Krow, Kcol, 0);
+                int captured = board.at(i, j);
+                board.set(i, j, kingValue);
+                board.set(Krow, Kcol, 0);
 
-            bool stillInCheck = check.checker(turn, board);
-            board.set(Krow, Kcol, kingValue);
-            board.set(i, j, captured);
+                bool stillInCheck = check.checker(turn, board);
+                board.set(Krow, Kcol, kingValue);
+                board.set(i, j, captured);
 
-            if (!stillInCheck)
-                return false;
+                if (!stillInCheck)
+                    return false;
+            }
         }
-    }
 
-    return true;
-}
+        return true;
+    }
+};

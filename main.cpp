@@ -165,7 +165,13 @@ int main()
         std::cerr << "Failed to load white pawn";
         return -1;
     }
-
+    // won text
+    Text checkmateText;
+    checkmateText.setFont(font);
+    checkmateText.setString("Checkmate!");
+    checkmateText.setCharacterSize(28);
+    checkmateText.setFillColor(Color::Red);
+    checkmateText.setPosition(BOARD_PIXELS + 40, WINDOW_HEIGHT / 2 - 60);
     // #######################################################################################################################################
 
     Board board;
@@ -177,10 +183,12 @@ int main()
     queenmove queen;
     can_it_move canit;
     move swap;
+    checkmate mate_done;
     bool checki = false;
     int turn = WHITE;
     int value = 0;
     int selectedRow = -1, selectedCol = -1;
+    bool isLight;
     // τι δουλευει μετα το ανοιγμα του παραθυρου
     int newrow = -1;
     int newcol = -1;
@@ -231,6 +239,10 @@ int main()
                         selectedCol = -1;
                         turn = swap.change_turn(turn);
                     }
+                    if (mate_done.isCheckmate(turn, board))
+                    {
+                        window.draw(checkmateText);
+                    }
                 } // rook
                 else if (((value == 4 && turn == WHITE) || (value == -4 && turn == BLACK)) && rook.check_rook(row, col, selectedRow, selectedCol, value, board) != 0)
                 {
@@ -240,16 +252,7 @@ int main()
 
                     if (canit.checker(turn, board))
                     {
-                        // ελεγχος αν αφηνω τον δικο μου βασιλια σε check
-                        board.set(selectedRow, selectedCol, value);
-                        board.set(row, col, captured);
-                    }
-                    else
-                    {
-                        // move stands
-                        selectedRow = -1;
-                        selectedCol = -1;
-                        turn = swap.change_turn(turn);
+                        window.draw(checkmateText);
                     }
                 }
                 else if (((value == 2 && turn == WHITE) || (value == -2 && turn == BLACK)) && horse.check_horse(row, col, selectedRow, selectedCol, value, board) != 0)
@@ -271,6 +274,10 @@ int main()
                         selectedCol = -1;
                         turn = swap.change_turn(turn);
                     }
+                    if (mate_done.isCheckmate(turn, board))
+                    {
+                        window.draw(checkmateText);
+                    }
                 }
                 else if (((value == -5 && turn == BLACK) || (value == 5 && turn == WHITE)) && king.check_king(row, col, selectedRow, selectedCol, value, board) != 0)
                 {
@@ -290,6 +297,9 @@ int main()
                         selectedRow = -1;
                         selectedCol = -1;
                         turn = swap.change_turn(turn);
+                    }
+                    if (mate_done.isCheckmate(turn, board))
+                    {
                     }
                 }
                 else if (((value == -3 && turn == BLACK) || (value == 3 && turn == WHITE)) && bisop.check_bis(row, col, selectedRow, selectedCol, value, board) != 0)
@@ -311,6 +321,10 @@ int main()
                         selectedCol = -1;
                         turn = swap.change_turn(turn);
                     }
+                    if (mate_done.isCheckmate(turn, board))
+                    {
+                        window.draw(checkmateText);
+                    }
                 }
                 else if (((value == -6 && turn == BLACK) || (value == 6 && turn == WHITE)) && queen.check_queen(row, col, selectedRow, selectedCol, value, board) != 0)
                 {
@@ -330,6 +344,10 @@ int main()
                         selectedRow = -1;
                         selectedCol = -1;
                         turn = swap.change_turn(turn);
+                    }
+                    if (mate_done.isCheckmate(turn, board))
+                    {
+                        window.draw(checkmateText);
                     }
                 }
                 //   σε περιπτωση που πατησω ενα πιωνη και μετα ενα αλλο πρεπει να παρω το 2ο πιωνη που πατηθηκε
