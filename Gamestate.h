@@ -22,7 +22,7 @@ public:
     bisopmove bis;
     horsemove horse;
     pawnmove pawn;
-
+    kingmove king;
     bool checker(int value, Board &board)
     {
         int Krow = -1;
@@ -56,7 +56,8 @@ public:
                     continue;
 
                 int type = std::abs(piece);
-
+                if (type == 5 && king.check_king(Krow, Kcol, i, j, piece, board) != 0)
+                    return true;
                 if (type == 2 && horse.check_horse(Krow, Kcol, i, j, piece, board) != 0)
                     return true;
                 if (type == 6 && queen.check_queen(Krow, Kcol, i, j, piece, board) != 0)
@@ -73,3 +74,50 @@ public:
         return false;
     }
 };
+
+bool isCheckmate(int turn, Board &board)
+{
+    kingmove king;
+    can_it_move check;
+
+    if (!check.checker(turn, board))
+        return false;
+
+    int kingValue = (turn == WHITE) ? 5 : -5;
+
+    int Krow = -1, Kcol = -1;
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            if (board.at(i, j) == kingValue)
+            {
+                Krow = i;
+                Kcol = j;
+            }
+        }
+    }
+
+    for (int i = Krow - 1; i <= Krow + 1; i++)
+    {
+        for (int j = Kcol - 1; j <= Kcol + 1; j++)
+        {
+
+            if (king.check_king(i, j, Krow, Kcol, kingValue, board) == 0)
+                continue;
+
+            int captured = board.at(i, j);
+            board.set(i, j, kingValue);
+            board.set(Krow, Kcol, 0);
+
+            bool stillInCheck = check.checker(turn, board);
+            board.set(Krow, Kcol, kingValue);
+            board.set(i, j, captured);
+
+            if (!stillInCheck)
+                return false;
+        }
+    }
+
+    return true;
+}
