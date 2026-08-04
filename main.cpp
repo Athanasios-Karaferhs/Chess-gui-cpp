@@ -219,7 +219,7 @@ int main()
                 }
             }
             else
-            { // ελεγχος για το αν το μαυρο πιωνι μπορει να φαει.
+            { // ελεγχος για το> πιωνι μπορει να φαει.
                 if (((value == 1 && turn == WHITE) || (value == -1 && turn == BLACK)) && pawn.check_pawn(row, col, selectedCol, selectedRow, value, board) != 0)
                 {
                     int captured = board.at(row, col);
@@ -249,8 +249,20 @@ int main()
                     int captured = board.at(row, col);
                     board.set(row, col, value);
                     board.set(selectedRow, selectedCol, 0);
-
                     if (canit.checker(turn, board))
+                    {
+                        // ελεγχος αν αφηνω τον δικο μου βασιλια σε check
+                        board.set(selectedRow, selectedCol, value);
+                        board.set(row, col, captured);
+                    }
+                    else
+                    {
+                        // move stands
+                        selectedRow = -1;
+                        selectedCol = -1;
+                        turn = swap.change_turn(turn);
+                    }
+                    if (mate_done.isCheckmate(turn, board))
                     {
                         window.draw(checkmateText);
                     }
@@ -300,6 +312,7 @@ int main()
                     }
                     if (mate_done.isCheckmate(turn, board))
                     {
+                        window.draw(checkmateText);
                     }
                 }
                 else if (((value == -3 && turn == BLACK) || (value == 3 && turn == WHITE)) && bisop.check_bis(row, col, selectedRow, selectedCol, value, board) != 0)
