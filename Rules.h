@@ -46,7 +46,7 @@ public:
         {
             if (targetValue != 0)
                 return 3;
-            return 0; // (en passant not handled yet)
+            return 0; // εν εχει εν πασσαντ και ΔΕΝ θα το φτιαξω συντομα
         }
 
         return 0;

@@ -3,6 +3,7 @@
 #include "Board.h"
 #include "Rules.h"
 #include "Gamestate.h"
+#include <vector>
 #define WHITE 1
 #define BLACK -1
 const int BOARD_SIZE = 8;
@@ -184,7 +185,7 @@ int main()
     can_it_move canit;
     move swap;
     checkmate mate_done;
-    bool checki = false;
+    bool done = false;
     int turn = WHITE;
     int value = 0;
     int selectedRow = -1, selectedCol = -1;
@@ -192,6 +193,7 @@ int main()
     // τι δουλευει μετα το ανοιγμα του παραθυρου
     int newrow = -1;
     int newcol = -1;
+    std::vector<std::string> moveHistory;
     while (window.isOpen())
     {
         Event event;
@@ -220,6 +222,9 @@ int main()
             }
             else
             { // ελεγχος για το> πιωνι μπορει να φαει.
+                std::string from = std::string(1, letters[selectedCol]) + std::string(1, numbers[selectedRow]);
+                std::string to = std::string(1, letters[col]) + std::string(1, numbers[row]);
+                std::string msg_move = from + " to " + to;
                 if (((value == 1 && turn == WHITE) || (value == -1 && turn == BLACK)) && pawn.check_pawn(row, col, selectedCol, selectedRow, value, board) != 0)
                 {
                     int captured = board.at(row, col);
@@ -238,11 +243,13 @@ int main()
                         selectedRow = -1;
                         selectedCol = -1;
                         turn = swap.change_turn(turn);
+                        moveHistory.push_back(msg_move);
                     }
                     if (mate_done.isCheckmate(turn, board))
                     {
-                        window.draw(checkmateText);
+                        done = true;
                     }
+
                 } // rook
                 else if (((value == 4 && turn == WHITE) || (value == -4 && turn == BLACK)) && rook.check_rook(row, col, selectedRow, selectedCol, value, board) != 0)
                 {
@@ -261,10 +268,11 @@ int main()
                         selectedRow = -1;
                         selectedCol = -1;
                         turn = swap.change_turn(turn);
+                        moveHistory.push_back(msg_move);
                     }
                     if (mate_done.isCheckmate(turn, board))
                     {
-                        window.draw(checkmateText);
+                        done = true;
                     }
                 }
                 else if (((value == 2 && turn == WHITE) || (value == -2 && turn == BLACK)) && horse.check_horse(row, col, selectedRow, selectedCol, value, board) != 0)
@@ -285,10 +293,11 @@ int main()
                         selectedRow = -1;
                         selectedCol = -1;
                         turn = swap.change_turn(turn);
+                        moveHistory.push_back(msg_move);
                     }
                     if (mate_done.isCheckmate(turn, board))
                     {
-                        window.draw(checkmateText);
+                        done = true;
                     }
                 }
                 else if (((value == -5 && turn == BLACK) || (value == 5 && turn == WHITE)) && king.check_king(row, col, selectedRow, selectedCol, value, board) != 0)
@@ -309,10 +318,11 @@ int main()
                         selectedRow = -1;
                         selectedCol = -1;
                         turn = swap.change_turn(turn);
+                        moveHistory.push_back(msg_move);
                     }
                     if (mate_done.isCheckmate(turn, board))
                     {
-                        window.draw(checkmateText);
+                        done = true;
                     }
                 }
                 else if (((value == -3 && turn == BLACK) || (value == 3 && turn == WHITE)) && bisop.check_bis(row, col, selectedRow, selectedCol, value, board) != 0)
@@ -333,10 +343,11 @@ int main()
                         selectedRow = -1;
                         selectedCol = -1;
                         turn = swap.change_turn(turn);
+                        moveHistory.push_back(msg_move);
                     }
                     if (mate_done.isCheckmate(turn, board))
                     {
-                        window.draw(checkmateText);
+                        done = true;
                     }
                 }
                 else if (((value == -6 && turn == BLACK) || (value == 6 && turn == WHITE)) && queen.check_queen(row, col, selectedRow, selectedCol, value, board) != 0)
@@ -357,10 +368,11 @@ int main()
                         selectedRow = -1;
                         selectedCol = -1;
                         turn = swap.change_turn(turn);
+                        moveHistory.push_back(msg_move);
                     }
                     if (mate_done.isCheckmate(turn, board))
                     {
-                        window.draw(checkmateText);
+                        done = true;
                     }
                 }
                 //   σε περιπτωση που πατησω ενα πιωνη και μετα ενα αλλο πρεπει να παρω το 2ο πιωνη που πατηθηκε
@@ -443,12 +455,25 @@ int main()
             }
         }
 
+        for (size_t i = 0; i < moveHistory.size(); i++)
+        {
+            Text entry;
+            entry.setFont(font);
+            entry.setString(moveHistory[i]);
+            entry.setCharacterSize(16);
+            entry.setFillColor(Color::Black);
+            entry.setPosition(BOARD_PIXELS + 20, 20 + i * 20);
+            window.draw(entry);
+        }
         // εκτυπωση γραμμων(απο το α μεχρι το h)
         for (int i = 0; i < BOARD_SIZE; ++i)
             window.draw(columnLabels[i]);
         // εκτυπωση στυλων
         for (int i = 0; i < BOARD_SIZE; ++i)
             window.draw(rowsLables[i]);
+
+        if (done)
+            window.draw(checkmateText);
 
         window.display();
     }
