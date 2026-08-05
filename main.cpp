@@ -454,15 +454,20 @@ int main()
                 window.draw(sprite);
             }
         }
-
-        for (size_t i = 0; i < moveHistory.size(); i++)
+        int maxPerPage = 27;
+        int start = (moveHistory.size() / maxPerPage) * maxPerPage;
+        // οταν κανω delete εναν χαρακτηρα προχωροντας ενα πιονι αυτο δεν εμφανιζεται και απλα γινονται ολα delete
+        for (size_t i = start; i < moveHistory.size(); ++i)
         {
             Text entry;
             entry.setFont(font);
             entry.setString(moveHistory[i]);
             entry.setCharacterSize(16);
             entry.setFillColor(Color::Black);
-            entry.setPosition(BOARD_PIXELS + 20, 20 + i * 20);
+
+            int lineIndex = i - start;
+            entry.setPosition(BOARD_PIXELS + 20, 20 + lineIndex * 20);
+
             window.draw(entry);
         }
         // εκτυπωση γραμμων(απο το α μεχρι το h)
