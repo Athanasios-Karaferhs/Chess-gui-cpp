@@ -1,6 +1,7 @@
 #pragma once
 #include <cmath>
 #include "Board.h"
+#include <vector>
 
 class pawnmove
 {
@@ -122,8 +123,9 @@ private:
     int flag = 0;
 
 public:
-    int check_king(int row, int col, int selectedRow, int selectedCol, int value, Board &board)
+    int check_king(int row, int col, int selectedRow, int selectedCol, int value, Board &board, int castle_white_R, int caslte_white_L)
     {
+        rookmove rook;
         int dRow = 0;
         int dCol = 0;
         // εστω οτι το cast ειναι αν εχει κουνιθει το καστρο
@@ -143,13 +145,24 @@ public:
 
         int mover = board.at(selectedRow, selectedCol);
         int target = board.at(row, col);
-
+        Texture textureRook;
+        Texture *correctTextureWhite = nullptr;
+        sf::RenderWindow window;
         if (target != 0 && ((target > 0) == (mover > 0)))
             return 0;
-        if ((dCol == 1 && dRow == 0) || (dCol == 0 && dRow == 1) || (dCol == 1 && dRow == 1) || (board.at(7, 4) == 5 && (dCol == 2 && dRow == 0) && flag == 0))
+        // ΜΟΝΟ ΑΠΟ ΤΗΝ ΔΕΞΙΑ ΠΛΕΥΡΑ
+        if ((dCol == 1 && dRow == 0) || (dCol == 0 && dRow == 1) || (dCol == 1 && dRow == 1) || (board.at(7, 4) == 5 && (dCol == 2 && dRow == 0) && flag == 0 && castle_white_R == 0))
         {
             if (dCol == 2 && dRow == 0)
+            {
+
+                correctTextureWhite = &textureRook;
+                Sprite sprite(*correctTextureWhite);
+                sprite.setPosition(col * SQUARE_SIZE, row * SQUARE_SIZE);
+                window.draw(sprite);
                 flag = 1;
+            }
+
             return 1;
         }
         return 0;

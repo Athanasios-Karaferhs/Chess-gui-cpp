@@ -191,6 +191,7 @@ int main()
     bool done = false;
     int turn = WHITE;
     int value = 0;
+    int cast_white_L = 0, cast_white_R = 0;
     int selectedRow = -1, selectedCol = -1;
     bool isLight;
     // τι δουλευει μετα το ανοιγμα του παραθυρου
@@ -256,7 +257,7 @@ int main()
                         done = true;
                     }
 
-                } // rook
+                } // rook( το castL ειναι για αν εκει κουνηθει ο πυργος απο την αριστερη πλευρα, παρομια και το castR)
                 else if (((value == 4 && turn == WHITE) || (value == -4 && turn == BLACK)) && rook.check_rook(row, col, selectedRow, selectedCol, value, board) != 0)
                 {
                     int captured = board.at(row, col);
@@ -306,7 +307,7 @@ int main()
                         done = true;
                     }
                 }
-                else if (((value == -5 && turn == BLACK) || (value == 5 && turn == WHITE)) && king.check_king(row, col, selectedRow, selectedCol, value, board) != 0)
+                else if (((value == -5 && turn == BLACK) || (value == 5 && turn == WHITE)) && king.check_king(row, col, selectedRow, selectedCol, value, board, cast_white_R, cast_white_L) != 0)
                 {
                     int captured = board.at(row, col);
                     board.set(row, col, value);
@@ -326,6 +327,7 @@ int main()
                         turn = swap.change_turn(turn);
                         moveHistory.push_back(msg_move);
                     }
+
                     if (mate_done.isCheckmate(turn, board))
                     {
                         done = true;
@@ -396,7 +398,7 @@ int main()
                 }
             }
         }
-
+        int white_castle = 0;
         window.clear();
 
         window.draw(sidePanel);
@@ -430,6 +432,10 @@ int main()
                     correctTexture = &texturewro;
                     break;
                 case 5:
+                    if (white_castle == 0 && cast_white_R == 1)
+                    {
+                        white_castle++;
+                    }
                     correctTexture = &textwking;
                     break;
                 case 6:

@@ -56,7 +56,7 @@ public:
                     continue;
 
                 int type = std::abs(piece);
-                if (type == 5 && king.check_king(Krow, Kcol, i, j, piece, board) != 0)
+                if (type == 5 && king.check_king(Krow, Kcol, i, j, piece, board, 0, 0) != 0)
                     return true;
                 if (type == 2 && horse.check_horse(Krow, Kcol, i, j, piece, board) != 0)
                     return true;
@@ -105,7 +105,7 @@ public:
             for (int j = Kcol - 1; j <= Kcol + 1; j++)
             {
 
-                if (king.check_king(i, j, Krow, Kcol, kingValue, board) == 0)
+                if (king.check_king(i, j, Krow, Kcol, kingValue, board, 0, 0) == 0)
                     continue;
 
                 int captured = board.at(i, j);
