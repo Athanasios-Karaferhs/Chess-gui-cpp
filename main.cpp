@@ -185,6 +185,9 @@ int main()
     can_it_move canit;
     move swap;
     checkmate mate_done;
+    players choose;
+    int how_many_players;
+    bool singleplayer = true;
     bool done = false;
     int turn = WHITE;
     int value = 0;
@@ -193,6 +196,7 @@ int main()
     // τι δουλευει μετα το ανοιγμα του παραθυρου
     int newrow = -1;
     int newcol = -1;
+    int cast = false;
     std::vector<std::string> moveHistory;
     while (window.isOpen())
     {
@@ -202,6 +206,7 @@ int main()
             if (event.type == Event::Closed)
                 window.close();
         }
+
         if (event.type == Event::MouseButtonPressed)
         {
 
@@ -225,6 +230,7 @@ int main()
                 std::string from = std::string(1, letters[selectedCol]) + std::string(1, numbers[selectedRow]);
                 std::string to = std::string(1, letters[col]) + std::string(1, numbers[row]);
                 std::string msg_move = from + " to " + to;
+
                 if (((value == 1 && turn == WHITE) || (value == -1 && turn == BLACK)) && pawn.check_pawn(row, col, selectedCol, selectedRow, value, board) != 0)
                 {
                     int captured = board.at(row, col);
@@ -454,9 +460,15 @@ int main()
                 window.draw(sprite);
             }
         }
+
+        // οταν κανω την 28η κινηση ξεκιναει παλι απο την αρχη και ταυτοχρονα εμαφνιζει την κινηση που εγινε
         int maxPerPage = 27;
-        int start = (moveHistory.size() / maxPerPage) * maxPerPage;
-        // οταν κανω delete εναν χαρακτηρα προχωροντας ενα πιονι αυτο δεν εμφανιζεται και απλα γινονται ολα delete
+        int start = 0;
+        if (moveHistory.size() > maxPerPage)
+        {
+            start = ((moveHistory.size() - 1) / maxPerPage) * maxPerPage;
+        }
+
         for (size_t i = start; i < moveHistory.size(); ++i)
         {
             Text entry;
@@ -464,7 +476,6 @@ int main()
             entry.setString(moveHistory[i]);
             entry.setCharacterSize(16);
             entry.setFillColor(Color::Black);
-
             int lineIndex = i - start;
             entry.setPosition(BOARD_PIXELS + 20, 20 + lineIndex * 20);
 

@@ -118,19 +118,22 @@ public:
 
 class kingmove
 {
+private:
+    int flag = 0;
+
 public:
     int check_king(int row, int col, int selectedRow, int selectedCol, int value, Board &board)
     {
         int dRow = 0;
         int dCol = 0;
-
+        // εστω οτι το cast ειναι αν εχει κουνιθει το καστρο
         if (row > selectedRow)
             dRow = row - selectedRow;
         else if (row < selectedRow)
             dRow = selectedRow - row;
         else
             dRow = 0;
-
+        // o βασικιας ο ασπρος ειναι στο (7,4)
         if (col > selectedCol)
             dCol = col - selectedCol;
         else if (col < selectedCol)
@@ -143,9 +146,12 @@ public:
 
         if (target != 0 && ((target > 0) == (mover > 0)))
             return 0;
-        if ((dCol == 1 && dRow == 0) || (dCol == 0 && dRow == 1) || (dCol == 1 && dRow == 1))
+        if ((dCol == 1 && dRow == 0) || (dCol == 0 && dRow == 1) || (dCol == 1 && dRow == 1) || (board.at(7, 4) == 5 && (dCol == 2 && dRow == 0) && flag == 0))
+        {
+            if (dCol == 2 && dRow == 0)
+                flag = 1;
             return 1;
-
+        }
         return 0;
     }
 };

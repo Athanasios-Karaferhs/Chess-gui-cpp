@@ -28,7 +28,7 @@ public:
         int Krow = -1;
         int Kcol = -1;
         int kingValue = (value == WHITE) ? 5 : -5;
-
+        int cast;
         // βρισκω που βρισκεται ο βασιλιας που ελεγχω
         for (int i = 0; i < 8; i++)
         {
@@ -81,7 +81,7 @@ public:
     {
         kingmove king;
         can_it_move check;
-
+        int cast;
         if (!check.checker(turn, board))
             return false;
 
@@ -122,5 +122,22 @@ public:
         }
 
         return true;
+    }
+};
+
+class players
+{
+public:
+    bool no_bot(int choose)
+    {
+        while (choose != 1 || choose != 2)
+        {
+            std::cout << "You'r choice is outside of range, plz enter a number either 1(for one player) or 2(for two players) : ";
+            std::cin >> choose;
+        }
+        if (choose == 2)
+            return true;
+        else if (choose == 1)
+            return false;
     }
 };
