@@ -307,7 +307,7 @@ int main()
                         done = true;
                     }
                 }
-                else if (((value == -5 && turn == BLACK) || (value == 5 && turn == WHITE)) && king.check_king(row, col, selectedRow, selectedCol, value, board, cast_white_R, cast_white_L) != 0)
+                else if (((value == -5 && turn == BLACK) || (value == 5 && turn == WHITE)) && king.check_king(row, col, selectedRow, selectedCol, value, board) != 0)
                 {
                     int captured = board.at(row, col);
                     board.set(row, col, value);
