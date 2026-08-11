@@ -186,6 +186,7 @@ int main()
     move swap;
     checkmate mate_done;
     players choose;
+    castling castle;
     int how_many_players;
     bool singleplayer = true;
     bool done = false;
@@ -318,6 +319,40 @@ int main()
                         // ελεγχος αν αφηνω τον δικο μου βασιλια σε check
                         board.set(selectedRow, selectedCol, value);
                         board.set(row, col, captured);
+                    }
+                    else
+                    {
+                        // move stands
+                        selectedRow = -1;
+                        selectedCol = -1;
+                        turn = swap.change_turn(turn);
+                        moveHistory.push_back(msg_move);
+                    }
+
+                    if (mate_done.isCheckmate(turn, board))
+                    {
+                        done = true;
+                    }
+                }
+                else if (value == 5 && turn == WHITE && castle.check_for_castle(row, col, selectedRow, selectedCol, value, board) != 0)
+                {
+                    int captured = board.at(row, col);
+
+                    // move the king
+                    board.set(row, col, value);
+                    board.set(selectedRow, selectedCol, 0);
+
+                    // move the rook too — it jumps from h1 to f1 as part of the same move
+                    board.set(7, 5, 4);
+                    board.set(7, 7, 0);
+
+                    if (canit.checker(turn, board))
+                    {
+                        // undo BOTH pieces — the move left the king in check
+                        board.set(selectedRow, selectedCol, value);
+                        board.set(row, col, captured);
+                        board.set(7, 7, 4);
+                        board.set(7, 5, 0);
                     }
                     else
                     {

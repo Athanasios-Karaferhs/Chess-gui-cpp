@@ -128,16 +128,14 @@ public:
 class players
 {
 public:
-    bool no_bot(int choose)
+    bool no_bot()
     {
-        while (choose != 1 || choose != 2)
+        int choose = 0; // start with a value guaranteed to be invalid
+        while (choose != 1 && choose != 2)
         {
-            std::cout << "You'r choice is outside of range, plz enter a number either 1(for one player) or 2(for two players) : ";
+            std::cout << "Your choice is outside of range, please enter 1 (one player) or 2 (two players): ";
             std::cin >> choose;
         }
-        if (choose == 2)
-            return true;
-        else if (choose == 1)
-            return false;
+        return (choose == 2);
     }
 };

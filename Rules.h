@@ -144,8 +144,7 @@ public:
 
         if (target != 0 && ((target > 0) == (mover > 0)))
             return 0;
-        // ΜΟΝΟ ΑΠΟ ΤΗΝ ΔΕΞΙΑ ΠΛΕΥΡΑ
-        if ((dCol == 1 && dRow == 0) || (dCol == 0 && dRow == 1) || (dCol == 1 && dRow == 1) || (board.at(7, 4) == 5))
+        if ((dCol == 1 && dRow == 0) || (dCol == 0 && dRow == 1) || (dCol == 1 && dRow == 1))
             return 1;
 
         return 0;
